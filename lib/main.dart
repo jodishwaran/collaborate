@@ -1,14 +1,16 @@
 import 'package:collaborate/bloc/category_bloc.dart';
+import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/page/categories_page.dart';
 import 'package:collaborate/page/create_event_page.dart';
+import 'package:collaborate/page/event_detail_page.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'page/login_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(BlocProvider(bloc: EventBloc(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.white60,
         buttonTheme: ButtonThemeData(
             buttonColor: Color(0xFF045B9A), textTheme: ButtonTextTheme.primary),
-        fontFamily: 'Pacifico',
+        fontFamily: 'SourceSansPro',
         textTheme: TextTheme(
           headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
           title: TextStyle(
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'SourceSansPro'),
           body1: TextStyle(fontSize: 16.0, fontFamily: 'SourceSansPro'),
           body2: TextStyle(fontSize: 18.0, fontFamily: 'SourceSansPro'),
+          display1: TextStyle(fontSize: 18.0, fontFamily: 'SourceSansPro'),
         ),
       ),
       initialRoute: "/",
@@ -39,7 +42,8 @@ class MyApp extends StatelessWidget {
               child: CategoriesPage(),
             ),
         CreateEventPage.pageName: (ctx) => CreateEventPage(),
-        AppPage.pageName: (ctx) => AppPage()
+        AppPage.pageName: (ctx) => AppPage(),
+        EventDetailPage.pageName: (ctx) => EventDetailPage()
       },
     );
   }

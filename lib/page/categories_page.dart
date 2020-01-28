@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:collaborate/bloc/category_bloc.dart';
+import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/model/category.dart';
+import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:collaborate/widget/category_item.dart';
 import 'package:flutter/material.dart';
-
-import 'app_page.dart';
 
 class CategoriesPage extends StatefulWidget {
   static const String pageName = "/categories";
@@ -18,12 +16,12 @@ class CategoriesPage extends StatefulWidget {
 class _CategoriesPageState extends State<CategoriesPage> {
 //  List<Category> _selectedCategories = [];
 //  List<Category> _availableCategories = [];
-  StreamSubscription _subscription;
+//  StreamSubscription _subscription;
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _subscription.cancel();
+//    _subscription.cancel();
     super.dispose();
   }
 
@@ -43,22 +41,30 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final CategoriesBloc provider = BlocProvider.of<CategoriesBloc>(context);
+    final CategoriesBloc categoriesBloc =
+        BlocProvider.of<CategoriesBloc>(context);
+    final EventBloc eventBloc = BlocProvider.of<EventBloc>(context);
 
     _selectCategory(String categoryId) {
-      provider.updateCategorySelection(categoryId);
+      categoriesBloc.updateCategorySelection(categoryId);
     }
 
 //    _subscription = provider.outCategories.listen((categories) {
 //      _setInitialSelectedCategories(categories);
 //    });
 
+    List<Category> _getSelectedCategories(allCategories) {
+      return allCategories.where((category) {
+        return !!category.isSelected;
+      }).toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Choose your interest')),
       ),
       body: StreamBuilder(
-        stream: provider.outCategories,
+        stream: categoriesBloc.outCategories,
         builder: (BuildContext ctx, AsyncSnapshot<List<Category>> categories) {
           if (categories.hasData) {
             return Column(
@@ -84,10 +90,19 @@ class _CategoriesPageState extends State<CategoriesPage> {
                 ),
                 FlatButton(
                   child: Text('Choose Category'),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed(
-                      AppPage.pageName,
-                    );
+                  onPressed: () async {
+                    try {
+                      await eventBloc.getFeaturedEvents(
+                          _getSelectedCategories(categories.data));
+                      Navigator.of(context).pushReplacementNamed(
+                        AppPage.pageName,
+                      );
+                    } catch (e) {
+                      print('Exception occured during fetch featured evnts');
+                      throw (e);
+                    }
+
+//
                   },
                 )
               ],

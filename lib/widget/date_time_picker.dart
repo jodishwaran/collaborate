@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class _InputDropdown extends StatelessWidget {
-  const _InputDropdown({
+class InputDropdown extends StatelessWidget {
+  const InputDropdown({
     Key key,
     this.child,
     this.labelText,
@@ -46,8 +46,8 @@ class _InputDropdown extends StatelessWidget {
   }
 }
 
-class _DateTimePicker extends StatelessWidget {
-  const _DateTimePicker({
+class DateTimePicker extends StatelessWidget {
+  const DateTimePicker({
     Key key,
     this.labelText,
     this.selectedDate,
@@ -88,7 +88,7 @@ class _DateTimePicker extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 4,
-          child: _InputDropdown(
+          child: InputDropdown(
             labelText: labelText,
             valueText: DateFormat.yMMMd().format(selectedDate),
 //            valueStyle: valueStyle,
@@ -100,7 +100,7 @@ class _DateTimePicker extends StatelessWidget {
         const SizedBox(width: 12.0),
         Expanded(
           flex: 3,
-          child: _InputDropdown(
+          child: InputDropdown(
             valueText: selectedTime.format(context),
 //            valueStyle: valueStyle,
             onPressed: () {
@@ -113,101 +113,101 @@ class _DateTimePicker extends StatelessWidget {
   }
 }
 
-class DateAndTimePickerDemo extends StatefulWidget {
-  static const String routeName = '/material/date-and-time-pickers';
-
-  @override
-  _DateAndTimePickerDemoState createState() => _DateAndTimePickerDemoState();
-}
-
-class _DateAndTimePickerDemoState extends State<DateAndTimePickerDemo> {
-  DateTime _fromDate = DateTime.now();
-  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
-  DateTime _toDate = DateTime.now();
-  TimeOfDay _toTime = const TimeOfDay(hour: 7, minute: 28);
-  final List<String> _allActivities = <String>[
-    'hiking',
-    'swimming',
-    'boating',
-    'fishing'
-  ];
-  String _activity = 'fishing';
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        TextField(
-          enabled: true,
-          decoration: const InputDecoration(
-            labelText: 'Event name',
-            border: OutlineInputBorder(),
-          ),
-//                style: Theme.of(context).textTheme.headline4,
-        ),
-        TextField(
-          decoration: const InputDecoration(
-            labelText: 'Location',
-          ),
-//                style: Theme.of(context)
-//                    .textTheme
-//                    .headline4
-//                    .copyWith(fontSize: 20.0),
-        ),
-        _DateTimePicker(
-          labelText: 'From',
-          selectedDate: _fromDate,
-          selectedTime: _fromTime,
-          selectDate: (DateTime date) {
-            setState(() {
-              _fromDate = date;
-            });
-          },
-          selectTime: (TimeOfDay time) {
-            setState(() {
-              _fromTime = time;
-            });
-          },
-        ),
-        _DateTimePicker(
-          labelText: 'To',
-          selectedDate: _toDate,
-          selectedTime: _toTime,
-          selectDate: (DateTime date) {
-            setState(() {
-              _toDate = date;
-            });
-          },
-          selectTime: (TimeOfDay time) {
-            setState(() {
-              _toTime = time;
-            });
-          },
-        ),
-        const SizedBox(height: 8.0),
-        InputDecorator(
-          decoration: const InputDecoration(
-            labelText: 'Activity',
-            hintText: 'Choose an activity',
-            contentPadding: EdgeInsets.zero,
-          ),
-          isEmpty: _activity == null,
-          child: DropdownButton<String>(
-            value: _activity,
-            onChanged: (String newValue) {
-              setState(() {
-                _activity = newValue;
-              });
-            },
-            items: _allActivities.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
+//class DateAndTimePickerDemo extends StatefulWidget {
+//  static const String routeName = '/material/date-and-time-pickers';
+//
+//  @override
+//  _DateAndTimePickerDemoState createState() => _DateAndTimePickerDemoState();
+//}
+//
+//class _DateAndTimePickerDemoState extends State<DateAndTimePickerDemo> {
+//  DateTime _fromDate = DateTime.now();
+//  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
+//  DateTime _toDate = DateTime.now();
+//  TimeOfDay _toTime = const TimeOfDay(hour: 7, minute: 28);
+//  final List<String> _allActivities = <String>[
+//    'hiking',
+//    'swimming',
+//    'boating',
+//    'fishing'
+//  ];
+//  String _activity = 'fishing';
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Column(
+//      children: <Widget>[
+//        TextField(
+//          enabled: true,
+//          decoration: const InputDecoration(
+//            labelText: 'Event name',
+//            border: OutlineInputBorder(),
+//          ),
+////                style: Theme.of(context).textTheme.headline4,
+//        ),
+//        TextField(
+//          decoration: const InputDecoration(
+//            labelText: 'Location',
+//          ),
+////                style: Theme.of(context)
+////                    .textTheme
+////                    .headline4
+////                    .copyWith(fontSize: 20.0),
+//        ),
+//        _DateTimePicker(
+//          labelText: 'From',
+//          selectedDate: _fromDate,
+//          selectedTime: _fromTime,
+//          selectDate: (DateTime date) {
+//            setState(() {
+//              _fromDate = date;
+//            });
+//          },
+//          selectTime: (TimeOfDay time) {
+//            setState(() {
+//              _fromTime = time;
+//            });
+//          },
+//        ),
+//        _DateTimePicker(
+//          labelText: 'To',
+//          selectedDate: _toDate,
+//          selectedTime: _toTime,
+//          selectDate: (DateTime date) {
+//            setState(() {
+//              _toDate = date;
+//            });
+//          },
+//          selectTime: (TimeOfDay time) {
+//            setState(() {
+//              _toTime = time;
+//            });
+//          },
+//        ),
+//        const SizedBox(height: 8.0),
+//        InputDecorator(
+//          decoration: const InputDecoration(
+//            labelText: 'Activity',
+//            hintText: 'Choose an activity',
+//            contentPadding: EdgeInsets.zero,
+//          ),
+//          isEmpty: _activity == null,
+//          child: DropdownButton<String>(
+//            value: _activity,
+//            onChanged: (String newValue) {
+//              setState(() {
+//                _activity = newValue;
+//              });
+//            },
+//            items: _allActivities.map<DropdownMenuItem<String>>((String value) {
+//              return DropdownMenuItem<String>(
+//                value: value,
+//                child: Text(value),
+//              );
+//            }).toList(),
+//          ),
+//        ),
+//      ],
+//    );
+//  }
+//}

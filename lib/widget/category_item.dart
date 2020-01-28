@@ -22,7 +22,7 @@ class CategoryItem extends StatelessWidget {
         selectCategory(id);
       },
       child: Container(
-        color: isSelected ? Colors.teal : Colors.greenAccent,
+        color: isSelected ? Colors.black54 : Colors.black38,
         child: ClipRRect(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
@@ -31,7 +31,6 @@ class CategoryItem extends StatelessWidget {
               child: Text(
                 '$title',
                 style: TextStyle(
-                  fontFamily: Theme.of(context).textTheme.body2.fontFamily,
                   fontSize: Theme.of(context).textTheme.body2.fontSize,
                 ),
               ),

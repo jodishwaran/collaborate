@@ -33,6 +33,8 @@ class _AppPageState extends State<AppPage> {
 //      _selectedCategory = ModalRoute.of(context).settings.arguments as String;
     }
     _initCalled = true;
+
+//    final dashboardTab = BlocProvider(bloc: EventBloc(), child: Dashboard());
     _children = [Dashboard()];
     super.didChangeDependencies();
   }
