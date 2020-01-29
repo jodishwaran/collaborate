@@ -11,7 +11,7 @@ class AppPage extends StatefulWidget {
 
 class _AppPageState extends State<AppPage> {
   var _currentIndex = 0;
-  bool _initCalled = false;
+  bool _initDone = false;
 
   List<Widget> _children = [];
 
@@ -29,12 +29,8 @@ class _AppPageState extends State<AppPage> {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    if (!_initCalled) {
-//      _selectedCategory = ModalRoute.of(context).settings.arguments as String;
-    }
-    _initCalled = true;
-
-//    final dashboardTab = BlocProvider(bloc: EventBloc(), child: Dashboard());
+    if (!_initDone) {}
+    _initDone = true;
     _children = [Dashboard()];
     super.didChangeDependencies();
   }

@@ -50,13 +50,17 @@ class EventDetail extends StatelessWidget {
           Card(
             child: Column(
               children: <Widget>[
-                _buildEventDetailItem(context, event.title, 'Event name'),
+                _buildEventDetailItem(context, event.eventName, 'Event name'),
                 _buildEventDetailItem(
-                    context, event.description, 'Event description'),
-                _buildEventDetailItem(context,
-                    DateFormat.yMd().add_jms().format(event.startDate), 'From'),
-                _buildEventDetailItem(context,
-                    DateFormat.yMd().add_jms().format(event.endDate), 'To'),
+                    context, event.eventDesc, 'Event description'),
+                _buildEventDetailItem(
+                    context,
+                    DateFormat.yMd().add_jms().format(event.eventStartTime),
+                    'From'),
+                _buildEventDetailItem(
+                    context,
+                    DateFormat.yMd().add_jms().format(event.eventEndTime),
+                    'To'),
                 RaisedButton(
                   onPressed: () {},
                   child: Text(

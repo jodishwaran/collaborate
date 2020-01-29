@@ -48,7 +48,7 @@ class EventListItem extends StatelessWidget {
                     topRight: Radius.circular(10.0))),
             width: double.infinity,
             child: Text(
-              '${event.title}',
+              '${event.eventName}',
               style: Theme.of(context)
                   .textTheme
                   .body1
@@ -69,15 +69,15 @@ class EventListItem extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: Text(
-                    '${event.description}',
+                    '${event.eventDesc}',
                     style: Theme.of(context).textTheme.display1,
                   ),
                 )
               ],
             ),
           ),
-          _buildDateDisplay(context, event.startDate, 'From'),
-          _buildDateDisplay(context, event.endDate, 'to'),
+          _buildDateDisplay(context, event.eventStartTime, 'From'),
+          _buildDateDisplay(context, event.eventEndTime, 'to'),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

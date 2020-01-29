@@ -1,23 +1,33 @@
 import 'package:flutter/foundation.dart';
 
-enum EventStatus { Scheduled, Started, Completed, Canceled }
+enum EventStatus { Created, Started, Completed, Canceled }
 
 class Event {
-  String id;
-  String title;
-  String description;
-  EventStatus status;
-  String createdBy;
-  DateTime startDate;
-  DateTime endDate;
+  int eventId;
+  String eventName;
+  String eventDesc;
+  String status;
+  int userId;
+  DateTime eventStartTime;
+  DateTime eventEndTime;
+  String eventLocation;
+  int minPeople;
+  int maxPeople;
+  int categoryId;
+  int locationId;
 
   Event({
-    @required this.id,
-    @required this.title,
-    @required this.description,
+    @required this.eventId,
+    @required this.eventName,
+    @required this.eventDesc,
     @required this.status,
-    @required this.createdBy,
-    @required this.startDate,
-    @required this.endDate,
+    @required this.userId,
+    @required this.eventStartTime,
+    @required this.eventEndTime,
+    @required this.eventLocation,
+    @required this.minPeople,
+    @required this.maxPeople,
+    @required this.categoryId,
+    @required this.locationId,
   });
 }

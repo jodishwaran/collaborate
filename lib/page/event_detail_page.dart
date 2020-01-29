@@ -29,7 +29,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text('${_event.title} Detail'),
+          child: Text('${_event.eventName} Detail'),
         ),
       ),
       body: EventDetail(_event),

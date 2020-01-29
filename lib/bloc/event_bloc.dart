@@ -1,5 +1,8 @@
+import 'package:collaborate/api/http_helper.dart';
 import 'package:collaborate/model/category.dart';
 import 'package:collaborate/model/event.dart';
+import 'package:collaborate/util/constants.dart';
+import 'package:collaborate/util/endpoints.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -23,40 +26,44 @@ class EventBloc extends BlocBase {
   Stream<List<Event>> get outSubscribedEvents =>
       _subscribedEventssubject.stream;
 
+  fetchUserEvents(int userId, String token) async {
+    final url = Endpoints.kgetUserEvents(userId);
+
+    await HTTPHelper().get(url: url, token: token);
+  }
+
   Future<void> getFeaturedEvents(List<Category> selectedCategories) async {
     await Future.delayed(Duration(seconds: 0));
 
     final List<Event> featuredEvents = [
       Event(
-        id: 1.toString(),
-        title: 'IPL match 1',
-        createdBy: "GK",
-        description:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
-        endDate: DateTime.now(),
-        startDate: DateTime.now(),
-        status: EventStatus.Scheduled,
+        eventId: 1,
+        eventName: "TestEvent",
+        eventLocation: "Location1",
+        eventStartTime: parseDateString("2020-01-30T00:00:00.000+0000"),
+        eventEndTime: parseDateString("2020-01-30T01:00:00.000+0000"),
+        eventDesc: "Event created for test",
+        status: "Created",
+        minPeople: 0,
+        maxPeople: 20,
+        userId: 1,
+        categoryId: 1,
+        locationId: 1,
       ),
       Event(
-        id: 2.toString(),
-        title: 'IPL match 2',
-        createdBy: "IN",
-        description:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
-        endDate: DateTime.now(),
-        startDate: DateTime.now(),
-        status: EventStatus.Scheduled,
-      ),
-      Event(
-        id: 3.toString(),
-        title: 'IPL match 3',
-        createdBy: "IN",
-        description:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy",
-        endDate: DateTime.now(),
-        startDate: DateTime.now(),
-        status: EventStatus.Scheduled,
-      ),
+        eventId: 2,
+        eventName: "TestEvent 2",
+        eventLocation: "Location2",
+        eventStartTime: parseDateString("2020-01-30T00:00:00.000+0000"),
+        eventEndTime: parseDateString("2020-01-30T01:00:00.000+0000"),
+        eventDesc: "Event created for test 2",
+        status: "Created",
+        minPeople: 0,
+        maxPeople: 20,
+        userId: 1,
+        categoryId: 1,
+        locationId: 1,
+      )
     ];
 
     _inFeaturedEvents.add(featuredEvents);

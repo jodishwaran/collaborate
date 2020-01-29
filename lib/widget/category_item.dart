@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CategoryItem extends StatelessWidget {
   final String title;
-  final String id;
+  final int id;
   final Function selectCategory;
   final bool isSelected;
   CategoryItem({

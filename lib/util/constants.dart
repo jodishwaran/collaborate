@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 
 Widget kBackBtn = Icon(
   Icons.arrow_back_ios,
@@ -35,3 +36,15 @@ var kTextFieldDecoration = InputDecoration(
   hintStyle: TextStyle(height: 1.5, fontWeight: FontWeight.w300),
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
 );
+
+parseDateString(String dateString) {
+  if (dateString.contains('T')) {
+    dateString = dateString.replaceFirst(RegExp('T'), " ");
+  }
+
+  var timezoneOffset = DateTime.now().timeZoneOffset;
+  var time_diff = new Duration(
+      hours: timezoneOffset.inHours, minutes: timezoneOffset.inMinutes % 60);
+
+  return DateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString).add(time_diff);
+}

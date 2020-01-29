@@ -6,6 +6,8 @@ class ContentString {
   static const email_hint = 'Enter Your Email Address';
   static const password_hint = 'Enter Your EPassword';
   static const email = 'Email';
+  static const username = 'Username';
+  static const username_hint = 'Please enter your username';
   static const password = 'Password';
 
   //Event Page
