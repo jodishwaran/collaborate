@@ -45,18 +45,11 @@ class CategoriesBloc extends BlocBase {
     final responseBody = await HTTPHelper()
         .get(url: Endpoints.kgetAllCategories, headers: headers);
 
-//    if (responseBody) {
-//      return false;
-//    }
-
     print(responseBody.forEach((category) {
       print(category);
     }));
 
     final List<Category> categories = _mapResponseToCategories(responseBody);
-    print('ohhhhh');
-    print('${categories.length}');
-
     _inCategories.add(categories);
     return true;
   }
@@ -64,9 +57,9 @@ class CategoriesBloc extends BlocBase {
   _mapResponseToCategories(response) {
     return List<Category>.from(response.map((categoryObj) {
       return Category(
-        id: categoryObj['id'],
-        categoryName: categoryObj['categoryName'],
-      );
+          id: categoryObj['id'],
+          categoryName: categoryObj['categoryName'],
+          imgPath: 'images/${categoryObj['categoryName']}.jpeg');
     }));
   }
 

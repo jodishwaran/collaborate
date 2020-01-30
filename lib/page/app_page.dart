@@ -1,6 +1,10 @@
+import 'package:collaborate/page/explore_page.dart';
+import 'package:collaborate/page/profile.dart';
 import 'package:collaborate/widget/dashboard.dart';
 import 'package:collaborate/widget/drawer.dart';
 import 'package:flutter/material.dart';
+
+import 'create_event_page.dart';
 
 class AppPage extends StatefulWidget {
   static const String pageName = "/app";
@@ -31,7 +35,7 @@ class _AppPageState extends State<AppPage> {
     // TODO: implement didChangeDependencies
     if (!_initDone) {}
     _initDone = true;
-    _children = [Dashboard()];
+    _children = [Dashboard(), Explore(), Profile()];
     super.didChangeDependencies();
   }
 
@@ -41,10 +45,19 @@ class _AppPageState extends State<AppPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text('Welcome'),
+            child: Text('Ketch up'),
           ),
+          actions: <Widget>[],
         ),
         drawer: AppDrawer(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(CreateEventPage.pageName);
+          },
+          child: Icon(Icons.add),
+          foregroundColor: Colors.white,
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
         body: _children[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
           onTap: onTabTapped,
@@ -55,8 +68,8 @@ class _AppPageState extends State<AppPage> {
               title: Text('Home'),
             ),
             new BottomNavigationBarItem(
-              icon: Icon(Icons.mail),
-              title: Text('Messages'),
+              icon: Icon(Icons.explore),
+              title: Text('Explore'),
             ),
             new BottomNavigationBarItem(
                 icon: Icon(Icons.person), title: Text('Profile'))

@@ -4,10 +4,10 @@ import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/category_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/model/event.dart';
-import 'package:collaborate/page/create_event_page.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
-import 'package:collaborate/widget/event_list_item.dart';
 import 'package:flutter/material.dart';
+
+import 'event_list_item.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard();
@@ -23,20 +23,50 @@ class _DashboardState extends State<Dashboard> {
   EventBloc eventBloc;
   CategoriesBloc categoriesBloc;
 
-  StreamSubscription userCategoriesSubscription;
+  StreamSubscription _userCategoriesSubscription;
+  StreamSubscription _userEventsSubscription;
+  StreamSubscription _allEventsSubscription;
+  StreamSubscription _userUpcomingEventsSubscription;
+
+  bool _loadingUserOrganizedEvents = false;
+  bool _loadingUserUpcomingEvents = false;
+
+  List<Event> _userOrganizedEvents = [];
+  List<Event> _allEvents = [];
+  List<Event> _userUpcomingEvents = [];
 
   @override
-  void didChangeDependencies() {
-    if (_initDone) {
+  void didChangeDependencies() async {
+    if (!_initDone) {
       authBloc = BlocProvider.of<AuthBloc>(context);
       eventBloc = BlocProvider.of<EventBloc>(context);
       categoriesBloc = BlocProvider.of<CategoriesBloc>(context);
 
-//      categoriesBloc.outUserCategories.listen((){
-//
-//      })
-
       eventBloc.fetchUserEvents(authBloc.userId, authBloc.token);
+      eventBloc.fetchAllEvents(authBloc.token);
+      eventBloc.fetchUserUpcomingEvents(authBloc.userId, authBloc.token);
+
+      _userEventsSubscription =
+          eventBloc.outOrganizedEvents.listen((userOrganizedEvents) {
+        setState(() {
+          _userOrganizedEvents = userOrganizedEvents;
+          _loadingUserOrganizedEvents = false;
+        });
+      });
+
+      _allEventsSubscription = eventBloc.outAllEvents.listen((allEvents) {
+        setState(() {
+          _allEvents = allEvents;
+        });
+      });
+
+      _userUpcomingEventsSubscription =
+          eventBloc.outSubscribedEvents.listen((userUpcomingEvents) {
+        setState(() {
+          _userUpcomingEvents = userUpcomingEvents;
+          _loadingUserUpcomingEvents = false;
+        });
+      });
     }
     _initDone = true;
     super.didChangeDependencies();
@@ -56,42 +86,105 @@ class _DashboardState extends State<Dashboard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  'You have not organized any Events coming up. Please create one!',
-                  style: TextStyle(
-                    fontFamily: Theme.of(context).textTheme.body1.fontFamily,
+//              Padding(
+//                padding: EdgeInsets.symmetric(horizontal: 10.0),
+//                child: Text(
+//                  'You have not organized any Events coming up. Please create one!',
+//                  style: TextStyle(
+//                    fontFamily: Theme.of(context).textTheme.body1.fontFamily,
+//                  ),
+//                ),
+//              ),
+//              RaisedButton(
+//                  child: Text('Create Event'),
+//                  onPressed: () {
+//                    Navigator.of(context).pushNamed(CreateEventPage.pageName);
+//                  }),
+//              Divider(),
+//              Text(
+//                'Top Events for You!',
+//                style: Theme.of(context).textTheme.title,
+//              ),
+              Container(
+                height: 600,
+                child: DefaultTabController(
+                  length: 2,
+                  child: Scaffold(
+                    appBar: AppBar(
+                      bottom: TabBar(
+                        tabs: [
+                          Tab(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Created',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                Icon(Icons.assessment)
+                              ],
+                            ),
+                          ),
+                          Tab(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Upcoming',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                Icon(Icons.play_for_work)
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      title: Center(child: Text('Events')),
+                    ),
+                    body: TabBarView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: _userOrganizedEvents.isNotEmpty
+                              ? ListView(
+//                                  crossAxisAlignment:
+//                                      CrossAxisAlignment.stretch,
+                                  children: _userOrganizedEvents
+                                      .map((Event featuredEvent) {
+                                  return EventListItem(event: featuredEvent);
+                                }).toList())
+                              : Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: _userUpcomingEvents.isNotEmpty
+                              ? ListView(
+//                                  crossAxisAlignment:
+//                                      CrossAxisAlignment.stretch,
+                                  children: _userUpcomingEvents
+                                      .map((Event featuredEvent) {
+                                  return EventListItem(event: featuredEvent);
+                                }).toList())
+                              : Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              RaisedButton(
-                  child: Text('Create Event'),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(CreateEventPage.pageName);
-                  }),
-              Divider(),
-              Text(
-                'Top Events for You!',
-                style: Theme.of(context).textTheme.title,
-              ),
-              StreamBuilder(
-                stream: featuredEventsProvider.outFeaturedEvents,
-                builder: (ctx, AsyncSnapshot<List<Event>> featuredEvents) {
-                  if (featuredEvents.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children:
-                            featuredEvents.data.map((Event featuredEvent) {
-                          return EventListItem(event: featuredEvent);
-                        }).toList(),
-                      ),
-                    );
-                  }
-                  return SizedBox();
-                },
               )
             ],
           ),
@@ -102,7 +195,19 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void dispose() {
-    userCategoriesSubscription.cancel();
+    if (_userEventsSubscription != null) {
+      _userEventsSubscription.cancel();
+    }
+    if (_userCategoriesSubscription != null) {
+      _userCategoriesSubscription.cancel();
+    }
+    if (_allEventsSubscription != null) {
+      _allEventsSubscription.cancel();
+    }
+    if (_userUpcomingEventsSubscription != null) {
+      _userUpcomingEventsSubscription.cancel();
+    }
+
     super.dispose();
   }
 }

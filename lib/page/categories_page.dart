@@ -24,12 +24,23 @@ class _CategoriesPageState extends State<CategoriesPage> {
 //  StreamSubscription _subscription;
   bool _initDone = false;
   bool _isLoading = false;
+  bool _hasUserInteractedWithCategory = false;
 //  bool _noUserCategories = true;
   List<Category> _categoriesWithSelection = [];
 
   AuthBloc authBloc;
   CategoriesBloc categoriesBloc;
   StreamSubscription _categoriesSubscription;
+
+  bool get canNavigateToAppPage {
+    if (_categoriesWithSelection.isEmpty) {
+      return false;
+    }
+
+    return _categoriesWithSelection.any((category) {
+      return category.isSelected;
+    });
+  }
 
   @override
   void dispose() {
@@ -101,15 +112,6 @@ class _CategoriesPageState extends State<CategoriesPage> {
     super.didChangeDependencies();
   }
 
-//  _setInitialSelectedCategories(List<Category> allCategories) {
-//    setState(() {
-//      _availableCategories = allCategories;
-//      _selectedCategories = allCategories.where((category) {
-//        return category.isSelected == true;
-//      }).toList();
-//    });
-//  }
-
   @override
   Widget build(BuildContext context) {
     final EventBloc eventBloc = BlocProvider.of<EventBloc>(context);
@@ -157,6 +159,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           id: category.id,
                           selectCategory: _selectCategory,
                           isSelected: category.isSelected,
+                          imgPath: category.imgPath,
                         );
                       }).toList(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -166,30 +169,36 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           mainAxisSpacing: 20.0),
                     ),
                   ),
-                  FlatButton(
+                  OutlineButton(
                     child: Text('Choose Category'),
-                    onPressed: () {
-                      if (doesUserHasSelectedCategory) {
-                        updateUserSelectedCategories();
-                        Navigator.of(context).pushReplacementNamed(
-                          AppPage.pageName,
-                        );
-                      }
-                    },
+                    onPressed: canNavigateToAppPage
+                        ? () {
+                            setState(() {
+                              _hasUserInteractedWithCategory = true;
+                            });
+                            if (doesUserHasSelectedCategory) {
+                              updateUserSelectedCategories();
+                              Navigator.of(context).pushReplacementNamed(
+                                AppPage.pageName,
+                              );
+                            }
+                          }
+                        : null,
                   ),
-                  !doesUserHasSelectedCategory
-                      ? Text(
-                          'Please select atleast one category',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      : Container()
+                  !_hasUserInteractedWithCategory
+                      ? Container()
+                      : !doesUserHasSelectedCategory
+                          ? Text(
+                              'Please select atleast one category',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Container()
                 ],
               ));
   }
 
   @override
   void deactivate() {
-    // TODO: implement deactivate
     _categoriesSubscription.cancel();
     super.deactivate();
   }

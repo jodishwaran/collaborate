@@ -13,6 +13,11 @@ class EventBloc extends BlocBase {
   Sink<List<Event>> get _inFeaturedEvents => __featuredEventsSubject.sink;
   Stream<List<Event>> get outFeaturedEvents => __featuredEventsSubject.stream;
 
+  final BehaviorSubject<List<Event>> __allEventsSubject =
+      BehaviorSubject<List<Event>>();
+  Sink<List<Event>> get _inAllEvents => __allEventsSubject.sink;
+  Stream<List<Event>> get outAllEvents => __allEventsSubject.stream;
+
   //User Organized events
   final BehaviorSubject<List<Event>> _organizedEventsSubject =
       BehaviorSubject<List<Event>>();
@@ -26,10 +31,56 @@ class EventBloc extends BlocBase {
   Stream<List<Event>> get outSubscribedEvents =>
       _subscribedEventssubject.stream;
 
-  fetchUserEvents(int userId, String token) async {
+  final BehaviorSubject<bool> _createdEventssubject = BehaviorSubject<bool>();
+  Sink<bool> get _inCreatedEvents => _createdEventssubject.sink;
+  Stream<bool> get outCreatedEvents => _createdEventssubject.stream;
+
+  Future<void> fetchUserEvents(int userId, String token) async {
     final url = Endpoints.kgetUserEvents(userId);
 
-    await HTTPHelper().get(url: url, token: token);
+    final responseBody = await HTTPHelper().get(url: url, token: token);
+
+    print(responseBody.forEach((event) {
+      print(event);
+    }));
+
+    final List<Event> userEvents = _mapResponseToEvents(responseBody);
+    _inOrganizedEvents.add(userEvents);
+  }
+
+  Future<void> fetchAllEvents(String token) async {
+    final url = Endpoints.kgetAllEvents;
+
+    final responseBody = await HTTPHelper().get(url: url, token: token);
+
+    print(responseBody.forEach((event) {
+      print(event);
+    }));
+
+    final List<Event> allEvents = _mapResponseToEvents(responseBody);
+    _inAllEvents.add(allEvents);
+  }
+
+  Future<void> fetchUserUpcomingEvents(int userId, String token) async {
+    final url = Endpoints.kgetAllUserUpcomingEvents(userId);
+
+    final responseBody = await HTTPHelper().get(url: url, token: token);
+
+    print(responseBody.forEach((event) {
+      print(event);
+    }));
+
+    final List<Event> userUpcomingEvents =
+        List<Event>.from(responseBody.map((json) {
+      return Event.fromServerlessJson(json);
+    }));
+    _inSubscribedEvents.add(userUpcomingEvents);
+  }
+
+  _mapResponseToEvents(response) {
+    return List<Event>.from(response.map((json) {
+      return Event.fromJson(json);
+    }));
   }
 
   Future<void> getFeaturedEvents(List<Category> selectedCategories) async {
@@ -69,6 +120,11 @@ class EventBloc extends BlocBase {
     _inFeaturedEvents.add(featuredEvents);
   }
 
+  Future<dynamic> saveNewEvent(eventData, String token) async {
+    return await HTTPHelper()
+        .post(url: Endpoints.kcreateEvent, data: eventData, token: token);
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -76,6 +132,8 @@ class EventBloc extends BlocBase {
     __featuredEventsSubject.close();
     _organizedEventsSubject.close();
     _subscribedEventssubject.close();
+    __allEventsSubject.close();
+    _createdEventssubject.close();
     super.dispose();
   }
 }
