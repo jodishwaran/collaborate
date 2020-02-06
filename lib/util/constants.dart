@@ -48,3 +48,7 @@ parseDateString(String dateString) {
 
   return DateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString).add(time_diff);
 }
+
+parseServerlessDateString(String dateString) {
+  return DateFormat().add_yMd().add_Hms().parse(dateString);
+}

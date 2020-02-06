@@ -5,7 +5,9 @@ import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/page/categories_page.dart';
 import 'package:collaborate/page/create_event_page.dart';
 import 'package:collaborate/page/event_detail_page.dart';
+import 'package:collaborate/page/explore_page.dart';
 import 'package:collaborate/page/loading_spinner.dart';
+import 'package:collaborate/page/profile.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
                   },
                 ),
           routes: {
+            Profile.pageName: (ctx) => Profile(),
+            Explore.pageName: (ctx) => Explore(),
             CategoriesPage.pageName: (ctx) => CategoriesPage(),
             CreateEventPage.pageName: (ctx) => CreateEventPage(),
             LogInPage.pageName: (ctx) => LogInPage(),

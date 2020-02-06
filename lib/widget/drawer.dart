@@ -5,12 +5,13 @@ import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
-  _buildDrawerTile(String title, IconData icon, Function onTap) {
+  _buildDrawerTile(
+      String title, IconData icon, Function onTap, BuildContext context) {
     return ListTile(
       title: Text(title),
       leading: Icon(
         icon,
-        color: Colors.indigo,
+        color: Theme.of(context).primaryColor,
         size: 24.0,
       ),
       onTap: onTap,
@@ -30,14 +31,14 @@ class AppDrawer extends StatelessWidget {
             child: _buildDrawerTile('Choose Categories', Icons.category, () {
               Navigator.of(context)
                   .pushReplacementNamed(CategoriesPage.pageName);
-            }),
+            }, context),
           ),
           Container(
             margin: EdgeInsets.only(bottom: 10.0),
             child: _buildDrawerTile('Sign out', Icons.all_out, () async {
               await authBloc.logout();
               Navigator.of(context).pushReplacementNamed(LogInPage.pageName);
-            }),
+            }, context),
           ),
         ],
       ),
