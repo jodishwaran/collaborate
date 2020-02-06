@@ -8,6 +8,7 @@ import 'package:collaborate/page/event_detail_page.dart';
 import 'package:collaborate/page/explore_page.dart';
 import 'package:collaborate/page/loading_spinner.dart';
 import 'package:collaborate/page/profile.dart';
+import 'package:collaborate/page/sign_up.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
             CategoriesPage.pageName: (ctx) => CategoriesPage(),
             CreateEventPage.pageName: (ctx) => CreateEventPage(),
             LogInPage.pageName: (ctx) => LogInPage(),
+            SignUpPage.pageName: (ctx) => SignUpPage(),
             AppPage.pageName: (ctx) => AppPage(),
             EventDetailPage.pageName: (ctx) => EventDetailPage()
           },
