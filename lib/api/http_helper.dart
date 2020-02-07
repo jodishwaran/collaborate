@@ -3,12 +3,14 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
 class HTTPHelper {
-  get({String url, Map<String, dynamic> headers, String token}) async {
-    if (headers.isNotEmpty) {
+  get({String url, Map<String, String> headers, String token}) async {
+    print(token);
+
+    if (headers != null) {
       print('headers available for url : $url');
     }
 
-    if (headers.isEmpty) {
+    if (headers == null) {
       headers = {'Authorization': 'Bearer $token'};
     } else {
       if (!headers.containsKey('Authorization')) {
@@ -30,6 +32,9 @@ class HTTPHelper {
         print("HTTP Error occured: Status code is not 200/401");
         return {'error': "HTTP Error occured: Status code is not 200/401"};
       }
+    } on FormatException catch (e) {
+      print('The provided string is not valid JSON');
+      return "Success";
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       return 'HTTP Error occured during get operation';
@@ -37,10 +42,22 @@ class HTTPHelper {
   }
 
   Future<dynamic> post(
-      {String url, dynamic data, Map<String, String> headers}) async {
+      {String url,
+      dynamic data,
+      Map<String, String> headers,
+      String token}) async {
     try {
-      print('posting data url $url');
-      print(convert.jsonEncode(data));
+      if (headers == null) {
+        headers = {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        };
+      }
+
+//      print(token);
+
+//      print('posting data url $url');
+//      print(convert.jsonEncode(data));
       final response = await http.post(url,
           body: convert.jsonEncode(data), headers: headers);
 
@@ -53,6 +70,9 @@ class HTTPHelper {
         print("HTTP Error occured: Status code is not 200/401");
         return {'error': "HTTP Error occured: Status code is not 200/401"};
       }
+    } on FormatException catch (e) {
+      print('The provided string is not valid JSON');
+      return "Success";
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       return 'HTTP Error occured during get operation';
