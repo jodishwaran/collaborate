@@ -90,6 +90,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: ContentString.firstname,
                       ),
                     ),
+                     SizedBox(
+                      height: 15,
+                    ),
                     TextField(
                       controller: _lastnameController,
                       onChanged: (id) {},
@@ -100,6 +103,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: ContentString.lastname,
                       ),
                     ),
+                     SizedBox(
+                      height: 15,
+                    ),
                     TextField(
                       controller: _usernameController,
                       onChanged: (id) {},
@@ -108,19 +114,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: kTextFieldDecoration.copyWith(
                         hintText: ContentString.username_hint,
                         labelText: ContentString.username,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    TextField(
-                      controller: _emailController,
-                      onChanged: (id) {},
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      decoration: kTextFieldDecoration.copyWith(
-                        hintText: ContentString.email_hint,
-                        labelText: ContentString.email,
                       ),
                     ),
                     SizedBox(
