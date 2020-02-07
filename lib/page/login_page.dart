@@ -5,6 +5,7 @@ import 'package:collaborate/bloc/category_bloc.dart';
 import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/page/categories_page.dart';
 import 'package:collaborate/page/loading_spinner.dart';
+import 'package:collaborate/page/sign_up.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -81,6 +82,7 @@ class _LogInPageState extends State<LogInPage> {
         ? LoadingSpinner()
         : Scaffold(
             key: _scaffoldKey,
+            
             floatingActionButton: LoginButton(
                 label: buttonType == ButtonType.LOGIN
                     ? ContentString.login
@@ -92,6 +94,7 @@ class _LogInPageState extends State<LogInPage> {
                   authBloc.logIn(
                       _emailController.text, _passwordController.text);
                 }),
+                
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -123,6 +126,15 @@ class _LogInPageState extends State<LogInPage> {
                         labelText: ContentString.password,
                       ),
                     ),
+                    FlatButton(
+                    child: Text(
+                      ContentString.register,
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(SignUpPage.pageName);
+                    },
+                  ),
                   ],
                 ),
               ),

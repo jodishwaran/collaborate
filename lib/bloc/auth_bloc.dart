@@ -92,6 +92,7 @@ class AuthBloc extends BlocBase {
 
   signUp(var data) async {
     final responseBody = await _signup(data);
+    print(responseBody);
     if(responseBody.toString()=="Success"){
       return "Success";
     }

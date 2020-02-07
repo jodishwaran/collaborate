@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/page/loading_spinner.dart';
+import 'package:collaborate/page/login_page.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -72,7 +73,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             'lastName': _lastnameController.text,
                             'emailId': _emailController.text,
                             'locationId': '1'};
-                  authBloc.signUp(data);
+                  var res = authBloc.signUp(data);
+                  if(res=="Success"){
+                    print("User signed up succesfully");
+                  }else{
+                    print("sign up failed");
+                  }
+                  Navigator.of(context).pushReplacementNamed(LogInPage.pageName);
                 }),
             body: SafeArea(
               child: Padding(
