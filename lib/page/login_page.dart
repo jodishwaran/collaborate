@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/category_bloc.dart';
+import 'package:collaborate/model/auth.dart';
+import 'package:collaborate/model/category.dart';
 import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/page/categories_page.dart';
 import 'package:collaborate/page/loading_spinner.dart';
@@ -10,6 +12,7 @@ import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:collaborate/widget/login_button.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum ButtonType { LOGIN, REGISTER }
 
@@ -46,6 +49,7 @@ class _LogInPageState extends State<LogInPage> {
       final AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
       final CategoriesBloc categoriesBloc =
           BlocProvider.of<CategoriesBloc>(context);
+
       _subscription = authBloc.outAuthStatus.listen((auth) async {
         if (auth.isAuthenticated == true) {
           categoriesBloc.fetchUserCategories(authBloc.userId, authBloc.token);
@@ -56,16 +60,22 @@ class _LogInPageState extends State<LogInPage> {
         }
       });
 
-      _userCategoriessubscription =
-          categoriesBloc.outUserCategories.listen((userCategories) {
-        if (userCategories.isNotEmpty) {
-          print('User Has categories, going to app page ');
-          Navigator.of(context).pushReplacementNamed(AppPage.pageName);
-          return;
-        }
-        print('User Has No categories, going to categories page ');
+      _userCategoriessubscription = CombineLatestStream.list<dynamic>(
+              [categoriesBloc.outUserCategories, authBloc.outAuthStatus])
+          .listen((data) {
+        List<Category> userCategories = data[0];
+        Auth auth = data[1];
 
-        Navigator.of(context).pushReplacementNamed(CategoriesPage.pageName);
+        if (auth.isAuthenticated) {
+          if (userCategories.isNotEmpty) {
+            print('User Has categories, going to app page ');
+            Navigator.of(context).pushReplacementNamed(AppPage.pageName);
+            return;
+          }
+          print('User Has No categories, going to categories page ');
+
+          Navigator.of(context).pushReplacementNamed(CategoriesPage.pageName);
+        }
       });
     }
 

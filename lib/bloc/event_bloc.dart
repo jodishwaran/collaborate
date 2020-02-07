@@ -1,6 +1,7 @@
 import 'package:collaborate/api/http_helper.dart';
 import 'package:collaborate/model/category.dart';
 import 'package:collaborate/model/event.dart';
+import 'package:collaborate/model/event_request.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/endpoints.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -34,6 +35,13 @@ class EventBloc extends BlocBase {
   final BehaviorSubject<bool> _createdEventssubject = BehaviorSubject<bool>();
   Sink<bool> get _inCreatedEvents => _createdEventssubject.sink;
   Stream<bool> get outCreatedEvents => _createdEventssubject.stream;
+
+  final BehaviorSubject<List<EventRequest>> _requestForEventsubject =
+      BehaviorSubject<List<EventRequest>>();
+  Sink<List<EventRequest>> get _inRequestedEvents =>
+      _requestForEventsubject.sink;
+  Stream<List<EventRequest>> get outRequestedEvents =>
+      _requestForEventsubject.stream;
 
   Future<void> fetchUserEvents(int userId, String token) async {
     final url = Endpoints.kgetUserEvents(userId);
@@ -125,6 +133,32 @@ class EventBloc extends BlocBase {
         .post(url: Endpoints.kcreateEvent, data: eventData, token: token);
   }
 
+  Future<dynamic> approveOrRejectEvent(payload, String token) async {
+    await HTTPHelper()
+        .put(url: Endpoints.kApproveEvent, data: payload, token: token);
+  }
+
+  Future<dynamic> attendEvent(payload, String token) async {
+    await HTTPHelper()
+        .post(url: Endpoints.kAttendEvent, data: payload, token: token);
+  }
+
+  Future<void> fetchRequestsByEvent(int eventId, String token) async {
+    final url = '${Endpoints.host}events/requests/$eventId';
+
+    final responseBody = await HTTPHelper().get(url: url, token: token);
+    print('evnt bloc -event requests fired responde  - $responseBody');
+    print(responseBody.forEach((event) {
+      print(event);
+    }));
+
+    final List<EventRequest> requestedEvents =
+        List<EventRequest>.from(responseBody.map((json) {
+      return EventRequest.fromJson(json);
+    }));
+    _inRequestedEvents.add(requestedEvents);
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -134,6 +168,7 @@ class EventBloc extends BlocBase {
     _subscribedEventssubject.close();
     __allEventsSubject.close();
     _createdEventssubject.close();
+    _requestForEventsubject.close();
     super.dispose();
   }
 }

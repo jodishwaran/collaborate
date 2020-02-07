@@ -2,6 +2,7 @@ import 'package:collaborate/util/constants.dart';
 import 'package:flutter/foundation.dart';
 
 enum EventStatus { Created, Started, Completed, Canceled }
+enum EventRequestStatus { REQUESTED, ACCEPTED, REJECTED }
 
 class Event {
   int eventId;

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
+import 'package:collaborate/bloc/location_bloc.dart';
+import 'package:collaborate/model/location.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -12,37 +16,51 @@ class CreateEventForm extends StatefulWidget {
   _CreateEventFormState createState() => _CreateEventFormState();
 }
 
+//class FormData {
+//  String eventName;
+//  String eventLocation;
+//  String eventStartTime;
+//  String eventEndTime;
+//  String status;
+//  String minPeople;
+//  String maxPeople;
+//  String userId;
+//  String categoryId;
+//  String locationId;
+//  String eventDesc;
+//
+//  FormData({
+//    this.locationId,
+//    this.eventName,
+//    this.eventDesc,
+//    this.eventEndTime,
+//    this.eventStartTime,
+//    this.minPeople,
+//    this.maxPeople,
+//    this.userId,
+//    this.eventLocation,
+//    this.categoryId,
+//  });
+//}
+
 class _CreateEventFormState extends State<CreateEventForm> {
   var _form = GlobalKey<FormState>();
+  var rangePplLimit = RangeValues(2.0, 100);
   bool _loading = false;
+  String _selectedLocation;
   var _formData = {
-    "eventName": "TestEvent gk 2",
     "eventLocation": "Location1",
-    "eventStartTime": "2020-01-31T00:00:00.000",
-    "eventEndTime": "2020-01-31T01:00:00.000",
-    "eventDesc": "Event created for test",
     "status": "Created",
-    "minPeople": "0",
-    "maxPeople": "20",
-    "userId": "1",
     "categoryId": "1",
-    "locationId": "1"
   };
 
   DateTime _fromDate = DateTime.now();
-  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
+  TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 30);
   DateTime _toDate = DateTime.now();
-  TimeOfDay _toTime = const TimeOfDay(hour: 7, minute: 28);
-  final List<String> _allLocations = <String>[
-    'Location1',
-    'Marathalli',
-    'Whitefield',
-    'Majestic'
-  ];
-  String _location = 'Ecoworld';
-
+  TimeOfDay _toTime = const TimeOfDay(hour: 7, minute: 30);
   EventBloc eventBloc;
   AuthBloc authBloc;
+  LocationBloc locationBloc;
 
   @override
   void initState() {
@@ -56,8 +74,16 @@ class _CreateEventFormState extends State<CreateEventForm> {
       setState(() {
         _loading = true;
       });
-
+      print('********* Form related data');
+//      _formData['userId'] = authBloc.userId.toString();
       _formData['userId'] = authBloc.userId.toString();
+      _formData['eventStartTime'] = parseUIDate(_fromDate, _fromTime);
+      _formData['eventEndTime'] = parseUIDate(_toDate, _toTime);
+      _formData['minPeople'] = rangePplLimit.start.toInt().toString();
+      _formData['maxPeople'] = rangePplLimit.end.toInt().toString();
+//      _formData['minPeople'] = _formData['minPeople'].toString();
+      _formData['locationId'] = _selectedLocation;
+      print(_formData);
       final response = await eventBloc.saveNewEvent(_formData, authBloc.token);
 
       print('form save response ');
@@ -66,10 +92,19 @@ class _CreateEventFormState extends State<CreateEventForm> {
       setState(() {
         _loading = false;
       });
+//      if (response.error = null) {
+//        _showDialog();
+//      } else {
+//        print('*********** error while saving form data &&&&&&&');
+//      }
 
       _showDialog();
     }
   }
+
+  StreamSubscription _locationSubscription;
+
+  List<Location> _locations;
 
   bool _initDone = false;
   @override
@@ -77,7 +112,19 @@ class _CreateEventFormState extends State<CreateEventForm> {
     if (!_initDone) {
       eventBloc = BlocProvider.of<EventBloc>(context);
       authBloc = BlocProvider.of<AuthBloc>(context);
+      locationBloc = BlocProvider.of<LocationBloc>(context);
+
+      locationBloc.fetchLocations(authBloc.token);
+
+      _locationSubscription = locationBloc.outLocations.listen((locations) {
+        setState(() {
+          _locations = locations;
+        });
+      });
+
+      //fetchLocations
       _initDone = true;
+      super.didChangeDependencies();
     }
   }
 
@@ -102,6 +149,15 @@ class _CreateEventFormState extends State<CreateEventForm> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    if (_locationSubscription != null) {
+      _locationSubscription.cancel();
+    }
+    super.dispose();
   }
 
   @override
@@ -131,6 +187,7 @@ class _CreateEventFormState extends State<CreateEventForm> {
                   },
                   onSaved: (value) {
                     _formData['eventName'] = value;
+//                    _formData.eventName = value;
                   },
                 ),
                 SizedBox(
@@ -144,12 +201,13 @@ class _CreateEventFormState extends State<CreateEventForm> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter Event name';
+                      return 'Please enter Event Description';
                     }
                     return null;
                   },
                   onSaved: (value) {
                     _formData['eventDesc'] = value;
+//                    _formData.eventDesc = value;
                     print(_formData);
                   },
                 ),
@@ -159,21 +217,23 @@ class _CreateEventFormState extends State<CreateEventForm> {
                 InputDecorator(
                   decoration: kTextFieldDecoration.copyWith(
                       labelText: ContentString.event_location),
-                  isEmpty: _formData["eventLocation"] == null,
+                  isEmpty: _locations == null,
                   child: DropdownButton<String>(
-                    value: _formData["eventLocation"],
+                    value: _selectedLocation,
                     onChanged: (String newValue) {
                       setState(() {
-                        _formData["eventLocation"] = newValue;
+                        _selectedLocation = newValue;
                       });
                     },
-                    items: _allLocations
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                    items: _locations == null
+                        ? []
+                        : _locations
+                            .map<DropdownMenuItem<String>>((Location location) {
+                            return DropdownMenuItem<String>(
+                              value: location.locationId,
+                              child: Text(location.locationdesc),
+                            );
+                          }).toList(),
                   ),
                 ),
                 SizedBox(
@@ -211,6 +271,61 @@ class _CreateEventFormState extends State<CreateEventForm> {
                       _toTime = time;
                     });
                   },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                  child: Text(
+                    'Select Minimum and Maximum participant count',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                SliderTheme(
+                  data: SliderThemeData(
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: RangeSlider(
+                    values: rangePplLimit,
+                    min: 2.0,
+                    max: 100.0,
+                    divisions: 98,
+                    onChanged: (RangeValues newValue) {
+                      setState(() {
+                        rangePplLimit = newValue;
+                      });
+                    },
+                    labels: RangeLabels(
+                        '${rangePplLimit.start}', '${rangePplLimit.end}'),
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.people_outline),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Text('Min ${rangePplLimit.start}'),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.people_outline),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Text('Max ${rangePplLimit.end}'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 20.0,

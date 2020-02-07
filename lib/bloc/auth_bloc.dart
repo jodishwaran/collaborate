@@ -124,7 +124,6 @@ class AuthBloc extends BlocBase {
 
       if (_expiresOn.isBefore(DateTime.now())) {
         print('token expired :(');
-
         return false;
       }
 
