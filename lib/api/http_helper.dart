@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 class HTTPHelper {
   get({String url, Map<String, String> headers, String token}) async {
+    print('user aut token during get api');
     print(token);
 
     if (headers != null) {
@@ -19,9 +20,11 @@ class HTTPHelper {
     }
 
     try {
+      print('firing api request for api $url');
       final response = await http.get(url, headers: headers);
+      print('response status code :');
       print(response.statusCode);
-      print(response.body);
+//      print(response.body);
       if (response.statusCode == 200) {
         return convert.jsonDecode(response.body);
       } else if (response.statusCode == 401) {
@@ -54,10 +57,11 @@ class HTTPHelper {
         };
       }
 
-//      print(token);
+      print('sending request for auth');
 
-//      print('posting data url $url');
-//      print(convert.jsonEncode(data));
+      print(data);
+
+      print(headers);
       final response = await http.post(url,
           body: convert.jsonEncode(data), headers: headers);
 
@@ -79,7 +83,43 @@ class HTTPHelper {
     }
   }
 
-  put(String url) {}
+  put(
+      {String url,
+      dynamic data,
+      Map<String, String> headers,
+      String token}) async {
+    try {
+      if (headers == null) {
+        headers = {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        };
+      }
+      print('*********see here');
+      print(data);
+      print(url);
+      print('*********see here');
+
+      final response =
+          await http.put(url, body: convert.jsonEncode(data), headers: headers);
+
+      print(response.body);
+      if (response.statusCode == 200) {
+        return convert.jsonDecode(response.body);
+      } else if (response.statusCode == 401) {
+        return {'error': "User Not Authorized"};
+      } else {
+        print("HTTP Error occured: Status code is not 200/401");
+        return {'error': "HTTP Error occured: Status code is not 200/401"};
+      }
+    } on FormatException catch (e) {
+      print('The provided string is not valid JSON');
+      return "Success";
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return 'HTTP Error occured during get operation';
+    }
+  }
 
   delete(String url) {}
 }

@@ -1,5 +1,8 @@
+import 'package:collaborate/bloc/auth_bloc.dart';
+import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/page/explore_page.dart';
 import 'package:collaborate/page/profile.dart';
+import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:collaborate/widget/dashboard.dart';
 import 'package:collaborate/widget/drawer.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +22,9 @@ class _AppPageState extends State<AppPage> {
 
   List<Widget> _children = [];
 
+  EventBloc eventBloc;
+  AuthBloc authBloc;
+
   @override
   void initState() {
     super.initState();
@@ -32,8 +38,10 @@ class _AppPageState extends State<AppPage> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    if (!_initDone) {}
+    if (!_initDone) {
+      eventBloc = BlocProvider.of<EventBloc>(context);
+      authBloc = BlocProvider.of<AuthBloc>(context);
+    }
     _initDone = true;
     _children = [Dashboard(), Explore(), Profile()];
     super.didChangeDependencies();
@@ -51,8 +59,9 @@ class _AppPageState extends State<AppPage> {
         ),
         drawer: AppDrawer(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(CreateEventPage.pageName);
+          onPressed: () async {
+            await Navigator.of(context).pushNamed(CreateEventPage.pageName);
+            eventBloc.fetchUserEvents(authBloc.userId, authBloc.token);
           },
           child: Icon(Icons.add),
           foregroundColor: Colors.white,

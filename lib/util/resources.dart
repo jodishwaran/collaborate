@@ -18,4 +18,8 @@ class ContentString {
   static const event_location = 'location';
   static const event_image = 'image';
   static const event_create = 'Create Event';
+  static const approve_event = 'Approve Event';
+  static const attend_create = 'Attend Event';
+  static const pending_requests = 'Pending';
+  static const approved_requests = 'Approved';
 }

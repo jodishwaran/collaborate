@@ -31,9 +31,9 @@ class _DashboardState extends State<Dashboard> {
   bool _loadingUserOrganizedEvents = false;
   bool _loadingUserUpcomingEvents = false;
 
-  List<Event> _userOrganizedEvents = [];
+  List<Event> _userOrganizedEvents;
   List<Event> _allEvents = [];
-  List<Event> _userUpcomingEvents = [];
+  List<Event> _userUpcomingEvents;
 
   @override
   void didChangeDependencies() async {
@@ -48,8 +48,14 @@ class _DashboardState extends State<Dashboard> {
 
       _userEventsSubscription =
           eventBloc.outOrganizedEvents.listen((userOrganizedEvents) {
+        _userOrganizedEvents = userOrganizedEvents;
+        _userOrganizedEvents.sort((a, b) {
+          var adate = a.eventStartTime;
+          var bdate = b.eventStartTime;
+          return bdate.compareTo(adate);
+        });
         setState(() {
-          _userOrganizedEvents = userOrganizedEvents;
+          _userOrganizedEvents = _userOrganizedEvents;
           _loadingUserOrganizedEvents = false;
         });
       });
@@ -149,38 +155,49 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: _userOrganizedEvents.isNotEmpty
-                              ? ListView(
-//                                  crossAxisAlignment:
-//                                      CrossAxisAlignment.stretch,
-                                  children: _userOrganizedEvents
-                                      .map((Event featuredEvent) {
-                                  return EventListItem(event: featuredEvent);
-                                }).toList())
-                              : Center(
+                          child: _userOrganizedEvents == null
+                              ? Center(
                                   child: CircularProgressIndicator(
                                     backgroundColor:
                                         Theme.of(context).primaryColor,
                                   ),
-                                ),
+                                )
+                              : _userOrganizedEvents.isNotEmpty
+                                  ? ListView(
+//                                  crossAxisAlignment:
+//                                      CrossAxisAlignment.stretch,
+                                      children: _userOrganizedEvents
+                                          .map((Event featuredEvent) {
+                                      return EventListItem(
+                                          event: featuredEvent);
+                                    }).toList())
+                                  : Center(
+                                      child: Text(
+                                          'You have not organized any events'),
+                                    ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: _userUpcomingEvents.isNotEmpty
-                              ? ListView(
+                            padding: const EdgeInsets.all(8.0),
+                            child: _userUpcomingEvents == null
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                    ),
+                                  )
+                                : _userUpcomingEvents.isNotEmpty
+                                    ? ListView(
 //                                  crossAxisAlignment:
 //                                      CrossAxisAlignment.stretch,
-                                  children: _userUpcomingEvents
-                                      .map((Event featuredEvent) {
-                                  return EventListItem(event: featuredEvent);
-                                }).toList())
-                              : Center(
-                                  child: CircularProgressIndicator(
-                                    backgroundColor:
-                                        Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                        )
+                                        children: _userUpcomingEvents
+                                            .map((Event featuredEvent) {
+                                        return EventListItem(
+                                            event: featuredEvent);
+                                      }).toList())
+                                    : Center(
+                                        child: Text(
+                                            'You have not subscribed to any events'),
+                                      ))
                       ],
                     ),
                   ),

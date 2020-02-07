@@ -3,8 +3,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 Widget kBackBtn = Icon(
-  Icons.arrow_back_ios,
-  // color: Colors.black54,
+  Icons.arrow_back,
+  color: Colors.white,
 );
 
 ShapeBorder kRoundedButtonShape = RoundedRectangleBorder(
@@ -51,4 +51,33 @@ parseDateString(String dateString) {
 
 parseServerlessDateString(String dateString) {
   return DateFormat().add_yMd().add_Hms().parse(dateString);
+}
+
+formatDate(DateTime date) {
+  return DateFormat().add_MEd().format(date);
+}
+
+formatTime(DateTime date) {
+  return DateFormat().add_jm().format(date);
+}
+
+SnackBar kSnackBar(String text) {
+  return SnackBar(
+    content: Text(text),
+//      action: SnackBarAction(
+//        label: 'Undo',
+//        onPressed: handler,
+//      ),
+  );
+}
+
+parseUIDate(DateTime date, TimeOfDay time) {
+  var reconstructedTime =
+      DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  var d = DateFormat("yyyy-MM-dd HH:mm:ss")
+      .format(reconstructedTime)
+      .toString()
+      .replaceFirst(RegExp(' '), "T");
+
+  return '$d.000';
 }
