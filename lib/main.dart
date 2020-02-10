@@ -1,4 +1,5 @@
 import 'package:collaborate/bloc/auth_bloc.dart';
+import 'package:collaborate/bloc/event_message_bloc.dart';
 import 'package:collaborate/bloc/category_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/page/app_page.dart';
@@ -20,8 +21,11 @@ void main() {
     BlocProvider(
       child: BlocProvider(
         child: BlocProvider(
-          bloc: EventBloc(),
-          child: MyApp(),
+          child: BlocProvider(
+            bloc: EventBloc(),
+            child: MyApp(),
+          ),
+          bloc: EventMessageBloc(),
         ),
         bloc: CategoriesBloc(),
       ),
