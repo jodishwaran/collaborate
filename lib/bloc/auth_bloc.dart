@@ -90,7 +90,13 @@ class AuthBloc extends BlocBase {
     }
   }
 
-  signUp() {}
+  signUp(var data) async {
+    final responseBody = await _signup(data);
+    print(responseBody);
+    if(responseBody.toString()=="Success"){
+      return "Success";
+    }
+  }
 
   Future<dynamic> _authenticate(
     String user,
@@ -99,6 +105,18 @@ class AuthBloc extends BlocBase {
     final data = {'username': user, 'password': pwd};
     final responseBody = await HTTPHelper().post(
         url: Endpoints.klogin,
+        data: data,
+        headers: {"Content-Type": "application/json"});
+
+    return responseBody;
+  }
+
+  Future<dynamic> _signup(
+    var data
+  ) async {
+    //final data = {'username': user, 'password': pwd,'firstName': firstName,'lastName': lastName,'emailId': emailId,'locationId': locationId};
+    final responseBody = await HTTPHelper().post(
+        url: Endpoints.ksignup,
         data: data,
         headers: {"Content-Type": "application/json"});
 

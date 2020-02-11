@@ -8,6 +8,8 @@ class ContentString {
   static const email = 'Email';
   static const username = 'Username';
   static const username_hint = 'Please enter your username';
+  static const firstname = 'First Name';
+  static const lastname = 'Last Name';
   static const password = 'Password';
 
   //Event Page

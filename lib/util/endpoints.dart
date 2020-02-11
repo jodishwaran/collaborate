@@ -1,6 +1,7 @@
 class Endpoints {
   static const host = 'https://msketchup.azurewebsites.net/';
   static final klogin = '${Endpoints.host}ketchup/authenticate';
+  static final ksignup = '${Endpoints.host}ketchup/signup';
   static final kgetAllCategories = '${Endpoints.host}categories/';
   static final kgetAllEvents = '${Endpoints.host}events/';
   static Function kgetUserCategories = (dynamic userId) {
