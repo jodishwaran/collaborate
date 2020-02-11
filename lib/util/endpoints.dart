@@ -4,6 +4,9 @@ class Endpoints {
   static final ksignup = '${Endpoints.host}ketchup/signup';
   static final kgetAllCategories = '${Endpoints.host}categories/';
   static final kgetAllEvents = '${Endpoints.host}events/';
+  static final kgetEventMessages = (dynamic eventId) {
+    return '${Endpoints.host}messages/$eventId';
+  };
   static Function kgetUserCategories = (dynamic userId) {
     return '${Endpoints.host}users/$userId/categories/';
   };
