@@ -151,17 +151,15 @@ class _EventDetailState extends State<EventDetail> {
                             backgroundColor: Theme.of(context).primaryColor,
                           )
                         : Container(),
-                    _isUserTheEventOwner
-                        ? Container()
-                        : _buildEventActionButton(
-                            ContentString.attend_create, _handleAttendEvent),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(right: 15.0, bottom: 10.0),
-                          child: RaisedButton(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _isUserTheEventOwner
+                              ? Container()
+                              : _buildEventActionButton(
+                                  ContentString.attend_create,
+                                  _handleAttendEvent),
+                          RaisedButton(
                             child: Text('View Messages'),
                             onPressed: () {
                               Navigator.of(context).pushNamed(
@@ -170,9 +168,25 @@ class _EventDetailState extends State<EventDetail> {
                             },
                             color: Theme.of(context).primaryColor,
                           ),
-                        )
-                      ],
-                    ),
+                        ]),
+//                    Row(
+//                      mainAxisAlignment: MainAxisAlignment.end,
+//                      children: <Widget>[
+//                        Padding(
+//                          padding:
+//                              const EdgeInsets.only(right: 15.0, bottom: 10.0),
+//                          child: RaisedButton(
+//                            child: Text('View Messages'),
+//                            onPressed: () {
+//                              Navigator.of(context).pushNamed(
+//                                  EventMessagesPage.pageName,
+//                                  arguments: widget.event);
+//                            },
+//                            color: Theme.of(context).primaryColor,
+//                          ),
+//                        )
+//                      ],
+//                    ),
                   ],
                 ),
               ),

@@ -98,6 +98,8 @@ class _LogInPageState extends State<LogInPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Container(
+                        child: Image.asset('assets/images/flutter_logo.png')),
                     TextField(
                       controller: _emailController,
                       onChanged: (id) {},

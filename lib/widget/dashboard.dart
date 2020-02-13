@@ -112,12 +112,22 @@ class _DashboardState extends State<Dashboard> {
 
   List<Event> get getJoinedEventsToday {
     if (_userUpcomingEvents == null || _userUpcomingEvents.isEmpty) {
+//      print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+//      print('Null getJoinedEventsToday');
+//      print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
       return null;
     }
 
-    return _userUpcomingEvents.where((events) {
+    final x = _userUpcomingEvents.where((events) {
       return calculateDateDifference(events.eventStartTime) == 0;
     }).toList();
+
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+//    print('its there getJoinedEventsToday');
+//    print(x);
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+    return x;
   }
 
   List<Event> get getJoinedFutureEvents {
@@ -130,24 +140,48 @@ class _DashboardState extends State<Dashboard> {
     }).toList();
   }
 
-  Widget _buildDateHeaderContainer(String text) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.0),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.black87,
-            width: 3.0,
-          ),
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-            color: Colors.black54, fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
+  Widget _buildDateHeaderContainer(String text, List<Event> events) {
+    return events.isNotEmpty
+        ? Container(
+            padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color(0XFF29323c),
+                Color(0XFF485563),
+              ]),
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Theme.of(context).primaryColor),
+            ),
+            width: double.infinity,
+//            decoration: BoxDecoration(
+//              border: Border(
+//                bottom: BorderSide(
+//                  color: Colors.black87,
+//                  width: 3.0,
+//                ),
+//              ),
+//            ),
+            child: Row(
+//              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Icon(
+                  Icons.event,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   Widget _buildEventList(List<Event> events, String emptyText) {
@@ -220,7 +254,7 @@ class _DashboardState extends State<Dashboard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Upcoming',
+                                  'Requested',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
@@ -231,7 +265,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ],
                       ),
-                      title: Center(child: Text('Events')),
+                      title: Center(child: Text('My Events')),
                     ),
                     body: TabBarView(
                       children: [
@@ -249,99 +283,36 @@ class _DashboardState extends State<Dashboard> {
                                       children: <Widget>[
                                         Column(
                                           children: <Widget>[
-                                            _buildDateHeaderContainer(
-                                                'Today\'s Events : '),
+                                            (getUserOrganizedEventsForToday !=
+                                                        null ||
+                                                    getUserOrganizedEventsForToday
+                                                            .length !=
+                                                        0)
+                                                ? _buildDateHeaderContainer(
+                                                    'Today',
+                                                    getUserOrganizedEventsForToday)
+                                                : SizedBox(),
                                             _buildEventList(
                                                 getUserOrganizedEventsForToday,
                                                 'No organized events for Today!'),
-//                                            Container(
-//                                              padding:
-//                                                  EdgeInsets.only(top: 10.0),
-//                                              width: double.infinity,
-//                                              decoration: BoxDecoration(
-//                                                border: Border(
-//                                                  bottom: BorderSide(
-//                                                    color: Colors.black87,
-//                                                    width: 3.0,
-//                                                  ),
-////                                                  top: BorderSide(
-////                                                    color: Colors.black87,
-////                                                    width: 3.0,
-////                                                  ),
-//                                                ),
-//                                              ),
-//                                              child: Text(
-//                                                'Today\'s Events : ',
-//                                                style: TextStyle(
-//                                                    color: Colors.black54,
-//                                                    fontSize: 24,
-//                                                    fontWeight:
-//                                                        FontWeight.bold),
-//                                              ),
-//                                            ),
-//                                            Column(
-//                                              children:
-//                                                  getUserOrganizedEventsForToday ==
-//                                                          null
-//                                                      ? [
-//                                                          Text(
-//                                                              'No organized events for Today!')
-//                                                        ]
-//                                                      : getUserOrganizedEventsForToday
-//                                                          .map((Event
-//                                                              featuredEvent) {
-//                                                          return EventListItem(
-//                                                              event:
-//                                                                  featuredEvent);
-//                                                        }).toList(),
-//                                            ),
                                           ],
                                         ),
                                         Column(
                                           children: <Widget>[
-                                            Container(
-                                              padding:
-                                                  EdgeInsets.only(top: 10.0),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.black87,
-                                                    width: 3.0,
-                                                  ),
-//                                                  top: BorderSide(
-//                                                    color: Colors.black87,
-//                                                    width: 3.0,
-//                                                  ),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                'Upcoming Events : ',
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            Column(
-                                              children:
-                                                  getUserOrganizedFutureEvents ==
-                                                          null
-                                                      ? [
-                                                          Text(
-                                                              'No organized events for Today!')
-                                                        ]
-                                                      : getUserOrganizedFutureEvents
-                                                          .map((Event
-                                                              featuredEvent) {
-                                                          return EventListItem(
-                                                              event:
-                                                                  featuredEvent);
-                                                        }).toList(),
-                                            ),
+                                            (getUserOrganizedFutureEvents !=
+                                                        null ||
+                                                    getUserOrganizedFutureEvents
+                                                            .length !=
+                                                        0)
+                                                ? _buildDateHeaderContainer(
+                                                    'Upcoming',
+                                                    getUserOrganizedFutureEvents)
+                                                : SizedBox(),
+                                            _buildEventList(
+                                                getUserOrganizedFutureEvents,
+                                                ''),
                                           ],
-                                        )
+                                        ),
                                       ],
                                     )
                                   : Center(
@@ -360,13 +331,38 @@ class _DashboardState extends State<Dashboard> {
                                   )
                                 : _userUpcomingEvents.isNotEmpty
                                     ? ListView(
-//                                  crossAxisAlignment:
-//                                      CrossAxisAlignment.stretch,
-                                        children: _userUpcomingEvents
-                                            .map((Event featuredEvent) {
-                                        return EventListItem(
-                                            event: featuredEvent);
-                                      }).toList())
+                                        children: <Widget>[
+                                          Column(
+                                            children: <Widget>[
+                                              (getJoinedEventsToday != null ||
+                                                      getJoinedEventsToday
+                                                              .length >
+                                                          0)
+                                                  ? _buildDateHeaderContainer(
+                                                      'Today',
+                                                      getJoinedEventsToday)
+                                                  : Container(),
+                                              _buildEventList(
+                                                  getJoinedEventsToday,
+                                                  'You don\'t have events to attend today!'),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: <Widget>[
+                                              (getJoinedFutureEvents != null ||
+                                                      getJoinedFutureEvents
+                                                              .length !=
+                                                          0)
+                                                  ? _buildDateHeaderContainer(
+                                                      'Upcoming',
+                                                      getJoinedFutureEvents)
+                                                  : SizedBox(),
+                                              _buildEventList(
+                                                  getJoinedFutureEvents, ''),
+                                            ],
+                                          ),
+                                        ],
+                                      )
                                     : Center(
                                         child: Text(
                                             'You have not subscribed to any events'),
@@ -401,3 +397,10 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 }
+
+//ListView(
+//children: _userUpcomingEvents
+//    .map((Event featuredEvent) {
+//return EventListItem(
+//event: featuredEvent);
+//}).toList())

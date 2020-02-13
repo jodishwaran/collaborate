@@ -63,9 +63,12 @@ class _EventRequestListState extends State<EventRequestList> {
   @override
   Widget build(BuildContext context) {
     if (_requestListForEvent == null) {
-      return Center(
-          child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor));
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+            child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor)),
+      );
     } else {
       return _requestListForEvent.isEmpty
           ? Container()

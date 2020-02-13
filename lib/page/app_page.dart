@@ -53,7 +53,7 @@ class _AppPageState extends State<AppPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text('Ketch up'),
+            child: Text('Ketch-up'),
           ),
           actions: <Widget>[],
         ),

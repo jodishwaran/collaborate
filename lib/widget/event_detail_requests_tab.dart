@@ -94,8 +94,25 @@ class _EventDetailRequestsTabState extends State<EventDetailRequestsTab>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              ListTile(
-                title: Text('Attendees Detail'),
+//              ListTile(
+//                title: Text('Attendees Detail'),
+//              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 5.0),
+                child: Text(
+                  'Attendees Detail',
+                  style: TextStyle(color: Colors.white),
+                ),
+                padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 15.0),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    Color(0XFF29323c),
+                    Color(0XFF485563),
+                  ]),
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(color: Theme.of(context).primaryColor),
+                ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
