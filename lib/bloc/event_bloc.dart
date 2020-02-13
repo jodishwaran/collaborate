@@ -134,12 +134,12 @@ class EventBloc extends BlocBase {
   }
 
   Future<dynamic> approveOrRejectEvent(payload, String token) async {
-    await HTTPHelper()
+    return await HTTPHelper()
         .put(url: Endpoints.kApproveEvent, data: payload, token: token);
   }
 
   Future<dynamic> attendEvent(payload, String token) async {
-    await HTTPHelper()
+    return await HTTPHelper()
         .post(url: Endpoints.kAttendEvent, data: payload, token: token);
   }
 

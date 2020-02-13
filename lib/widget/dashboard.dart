@@ -254,7 +254,7 @@ class _DashboardState extends State<Dashboard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Requested',
+                                  'Enrolled',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),

@@ -4,6 +4,7 @@ import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/bloc/location_bloc.dart';
 import 'package:collaborate/model/location.dart';
+import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -15,33 +16,6 @@ class CreateEventForm extends StatefulWidget {
   @override
   _CreateEventFormState createState() => _CreateEventFormState();
 }
-
-//class FormData {
-//  String eventName;
-//  String eventLocation;
-//  String eventStartTime;
-//  String eventEndTime;
-//  String status;
-//  String minPeople;
-//  String maxPeople;
-//  String userId;
-//  String categoryId;
-//  String locationId;
-//  String eventDesc;
-//
-//  FormData({
-//    this.locationId,
-//    this.eventName,
-//    this.eventDesc,
-//    this.eventEndTime,
-//    this.eventStartTime,
-//    this.minPeople,
-//    this.maxPeople,
-//    this.userId,
-//    this.eventLocation,
-//    this.categoryId,
-//  });
-//}
 
 class _CreateEventFormState extends State<CreateEventForm> {
   var _form = GlobalKey<FormState>();
@@ -75,13 +49,11 @@ class _CreateEventFormState extends State<CreateEventForm> {
         _loading = true;
       });
       print('********* Form related data');
-//      _formData['userId'] = authBloc.userId.toString();
       _formData['userId'] = authBloc.userId.toString();
       _formData['eventStartTime'] = parseUIDate(_fromDate, _fromTime);
       _formData['eventEndTime'] = parseUIDate(_toDate, _toTime);
       _formData['minPeople'] = rangePplLimit.start.toInt().toString();
       _formData['maxPeople'] = rangePplLimit.end.toInt().toString();
-//      _formData['minPeople'] = _formData['minPeople'].toString();
       _formData['locationId'] = _selectedLocation;
       print(_formData);
       final response = await eventBloc.saveNewEvent(_formData, authBloc.token);
@@ -92,13 +64,9 @@ class _CreateEventFormState extends State<CreateEventForm> {
       setState(() {
         _loading = false;
       });
-//      if (response.error = null) {
-//        _showDialog();
-//      } else {
-//        print('*********** error while saving form data &&&&&&&');
-//      }
 
       _showDialog();
+//      _showBottomSheet();
     }
   }
 
@@ -128,6 +96,22 @@ class _CreateEventFormState extends State<CreateEventForm> {
     }
   }
 
+//  void _showBottomSheet() {
+//    showBottomSheet(
+//      context: context,
+//      builder: (context) => Container(
+//          height: 50,
+//          alignment: Alignment.center,
+//          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+//          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+//          decoration: BoxDecoration(
+//            color: Colors.grey[300],
+//            borderRadius: BorderRadius.circular(10),
+//          ),
+//          child: Text('Event created succesfully!')),
+//    );
+//  }
+
   void _showDialog() {
     // flutter defined function
     showDialog(
@@ -135,14 +119,18 @@ class _CreateEventFormState extends State<CreateEventForm> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Event Created successfully!"),
+          title: Text(
+            "Event Created successfully!",
+            style: TextStyle(fontSize: 22),
+          ),
 //          content: new Text("Alert Dialog body"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
+            FlatButton(
+              child: Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(AppPage.pageName);
               },
             ),
           ],
@@ -153,7 +141,6 @@ class _CreateEventFormState extends State<CreateEventForm> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     if (_locationSubscription != null) {
       _locationSubscription.cancel();
     }
