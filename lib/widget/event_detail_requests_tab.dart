@@ -95,7 +95,7 @@ class _EventDetailRequestsTabState extends State<EventDetailRequestsTab>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               ListTile(
-                title: Text('Members Detail'),
+                title: Text('Attendees Detail'),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -147,92 +147,102 @@ class _EventDetailRequestsTabState extends State<EventDetailRequestsTab>
                 child: TabBarView(
                   controller: _tabController,
                   children: <Widget>[
-                    ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: EdgeInsets.only(top: 2),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          child: ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.all(10),
-                            leading:
-                                Text(_pendingRequestsMembers[index].userName),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                IconButton(
-                                  onPressed: () {
-                                    handleApproveOrRejectEvent(
-                                        token: authBloc.token,
-                                        requestId:
-                                            _pendingRequestsMembers[index]
-                                                .requestId,
-                                        userId: _pendingRequestsMembers[index]
-                                            .userId,
-                                        status: 1,
-                                        eventId: _pendingRequestsMembers[index]
-                                            .eventId);
-                                  },
-                                  color: Colors.lightGreen[900],
-                                  icon: Icon(Icons.check),
-                                  iconSize: 32,
+                    _pendingRequestsMembers.isEmpty
+                        ? Text('No requests pending to view')
+                        : ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                margin: EdgeInsets.only(top: 2),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
                                 ),
-                                IconButton(
-                                  onPressed: () {
-                                    handleApproveOrRejectEvent(
-                                        token: authBloc.token,
-                                        requestId:
-                                            _pendingRequestsMembers[index]
-                                                .requestId,
-                                        userId: _pendingRequestsMembers[index]
-                                            .userId,
-                                        status: 2,
-                                        eventId: _pendingRequestsMembers[index]
-                                            .eventId);
-                                  },
-                                  color: Colors.redAccent,
-                                  icon: Icon(Icons.cancel),
-                                  iconSize: 32,
+                                child: ListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.all(10),
+                                  leading: Text(
+                                      _pendingRequestsMembers[index].userName),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      IconButton(
+                                        onPressed: () {
+                                          handleApproveOrRejectEvent(
+                                              token: authBloc.token,
+                                              requestId:
+                                                  _pendingRequestsMembers[index]
+                                                      .requestId,
+                                              userId:
+                                                  _pendingRequestsMembers[index]
+                                                      .userId,
+                                              status: 1,
+                                              eventId:
+                                                  _pendingRequestsMembers[index]
+                                                      .eventId);
+                                        },
+                                        color: Colors.lightGreen[900],
+                                        icon: Icon(Icons.check),
+                                        iconSize: 32,
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          handleApproveOrRejectEvent(
+                                              token: authBloc.token,
+                                              requestId:
+                                                  _pendingRequestsMembers[index]
+                                                      .requestId,
+                                              userId:
+                                                  _pendingRequestsMembers[index]
+                                                      .userId,
+                                              status: 2,
+                                              eventId:
+                                                  _pendingRequestsMembers[index]
+                                                      .eventId);
+                                        },
+                                        color: Colors.redAccent,
+                                        icon: Icon(Icons.cancel),
+                                        iconSize: 32,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
+                              );
+                            },
+                            itemCount: _pendingRequestsMembers.length,
                           ),
-                        );
-                      },
-                      itemCount: _pendingRequestsMembers.length,
-                    ),
-                    ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: EdgeInsets.only(top: 2),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          child: ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.all(10),
-                            title: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                _approvedRequestsMembers[index].userName,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: _approvedRequestsMembers.length,
-                    )
+                    _approvedRequestsMembers.isEmpty
+                        ? Text('No confirmed attendees available')
+                        : ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                margin: EdgeInsets.only(top: 2),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                                child: ListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      _approvedRequestsMembers[index].userName,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: _approvedRequestsMembers.length,
+                          )
                   ],
                 ),
               )

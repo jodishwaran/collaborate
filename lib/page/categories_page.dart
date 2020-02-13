@@ -44,8 +44,6 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-//    _subscription.cancel();
     super.dispose();
   }
 
@@ -132,7 +130,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
     }
 
     updateUserSelectedCategories() {
-      categoriesBloc.updateCategorySelection(_categoriesWithSelection);
+      categoriesBloc.updateCategorySelection(
+          _categoriesWithSelection, authBloc.userId, authBloc.token);
     }
 //
 //    List<Category> _getSelectedCategories(allCategories) {

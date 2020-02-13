@@ -1,6 +1,7 @@
 import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/model/event.dart';
+import 'package:collaborate/page/event_messages_page.dart';
 import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/util/resources.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
@@ -89,7 +90,10 @@ class _EventDetailState extends State<EventDetail> {
   _buildEventActionButton(String labelText, Function handler) {
     return RaisedButton(
       child: Text(isRequestBtnDisabled ? 'Request Sent!' : labelText),
-      onPressed: isRequestBtnDisabled ? null : handler,
+      onPressed: (isRequestBtnDisabled ||
+              calculateDateDifference(widget.event.eventEndTime) < 0)
+          ? null
+          : handler,
     );
   }
 
@@ -150,7 +154,25 @@ class _EventDetailState extends State<EventDetail> {
                     _isUserTheEventOwner
                         ? Container()
                         : _buildEventActionButton(
-                            ContentString.attend_create, _handleAttendEvent)
+                            ContentString.attend_create, _handleAttendEvent),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: 15.0, bottom: 10.0),
+                          child: RaisedButton(
+                            child: Text('View Messages'),
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  EventMessagesPage.pageName,
+                                  arguments: widget.event);
+                            },
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ),

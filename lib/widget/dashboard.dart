@@ -4,6 +4,7 @@ import 'package:collaborate/bloc/auth_bloc.dart';
 import 'package:collaborate/bloc/category_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
 import 'package:collaborate/model/event.dart';
+import 'package:collaborate/util/constants.dart';
 import 'package:collaborate/widget/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
         _userOrganizedEvents.sort((a, b) {
           var adate = a.eventStartTime;
           var bdate = b.eventStartTime;
-          return bdate.compareTo(adate);
+          return adate.compareTo(bdate);
         });
         setState(() {
           _userOrganizedEvents = _userOrganizedEvents;
@@ -76,6 +77,87 @@ class _DashboardState extends State<Dashboard> {
     }
     _initDone = true;
     super.didChangeDependencies();
+  }
+
+  List<Event> get getUserOrganizedEventsForToday {
+    if (_userOrganizedEvents == null || _userOrganizedEvents.isEmpty) {
+      return null;
+    }
+
+    return _userOrganizedEvents.where((events) {
+      return calculateDateDifference(events.eventStartTime) == 0;
+    }).toList();
+
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+//    print(x.length);
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+//    return x;
+  }
+
+  List<Event> get getUserOrganizedFutureEvents {
+    if (_userOrganizedEvents == null || _userOrganizedEvents.isEmpty) {
+      return null;
+    }
+
+    return _userOrganizedEvents.where((events) {
+      return calculateDateDifference(events.eventStartTime) > 0;
+    }).toList();
+
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+//    print(x.length);
+//    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+//    return x;
+  }
+
+  List<Event> get getJoinedEventsToday {
+    if (_userUpcomingEvents == null || _userUpcomingEvents.isEmpty) {
+      return null;
+    }
+
+    return _userUpcomingEvents.where((events) {
+      return calculateDateDifference(events.eventStartTime) == 0;
+    }).toList();
+  }
+
+  List<Event> get getJoinedFutureEvents {
+    if (_userUpcomingEvents == null || _userUpcomingEvents.isEmpty) {
+      return null;
+    }
+
+    return _userUpcomingEvents.where((events) {
+      return calculateDateDifference(events.eventStartTime) > 0;
+    }).toList();
+  }
+
+  Widget _buildDateHeaderContainer(String text) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black87,
+            width: 3.0,
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+            color: Colors.black54, fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildEventList(List<Event> events, String emptyText) {
+    return Column(
+      children: events == null
+          ? [Text(emptyText)]
+          : events.map((Event featuredEvent) {
+              return EventListItem(event: featuredEvent);
+            }).toList(),
+    );
   }
 
   @override
@@ -164,13 +246,104 @@ class _DashboardState extends State<Dashboard> {
                                 )
                               : _userOrganizedEvents.isNotEmpty
                                   ? ListView(
-//                                  crossAxisAlignment:
-//                                      CrossAxisAlignment.stretch,
-                                      children: _userOrganizedEvents
-                                          .map((Event featuredEvent) {
-                                      return EventListItem(
-                                          event: featuredEvent);
-                                    }).toList())
+                                      children: <Widget>[
+                                        Column(
+                                          children: <Widget>[
+                                            _buildDateHeaderContainer(
+                                                'Today\'s Events : '),
+                                            _buildEventList(
+                                                getUserOrganizedEventsForToday,
+                                                'No organized events for Today!'),
+//                                            Container(
+//                                              padding:
+//                                                  EdgeInsets.only(top: 10.0),
+//                                              width: double.infinity,
+//                                              decoration: BoxDecoration(
+//                                                border: Border(
+//                                                  bottom: BorderSide(
+//                                                    color: Colors.black87,
+//                                                    width: 3.0,
+//                                                  ),
+////                                                  top: BorderSide(
+////                                                    color: Colors.black87,
+////                                                    width: 3.0,
+////                                                  ),
+//                                                ),
+//                                              ),
+//                                              child: Text(
+//                                                'Today\'s Events : ',
+//                                                style: TextStyle(
+//                                                    color: Colors.black54,
+//                                                    fontSize: 24,
+//                                                    fontWeight:
+//                                                        FontWeight.bold),
+//                                              ),
+//                                            ),
+//                                            Column(
+//                                              children:
+//                                                  getUserOrganizedEventsForToday ==
+//                                                          null
+//                                                      ? [
+//                                                          Text(
+//                                                              'No organized events for Today!')
+//                                                        ]
+//                                                      : getUserOrganizedEventsForToday
+//                                                          .map((Event
+//                                                              featuredEvent) {
+//                                                          return EventListItem(
+//                                                              event:
+//                                                                  featuredEvent);
+//                                                        }).toList(),
+//                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(top: 10.0),
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color: Colors.black87,
+                                                    width: 3.0,
+                                                  ),
+//                                                  top: BorderSide(
+//                                                    color: Colors.black87,
+//                                                    width: 3.0,
+//                                                  ),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Upcoming Events : ',
+                                                style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            Column(
+                                              children:
+                                                  getUserOrganizedFutureEvents ==
+                                                          null
+                                                      ? [
+                                                          Text(
+                                                              'No organized events for Today!')
+                                                        ]
+                                                      : getUserOrganizedFutureEvents
+                                                          .map((Event
+                                                              featuredEvent) {
+                                                          return EventListItem(
+                                                              event:
+                                                                  featuredEvent);
+                                                        }).toList(),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )
                                   : Center(
                                       child: Text(
                                           'You have not organized any events'),

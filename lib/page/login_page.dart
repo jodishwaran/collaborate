@@ -92,19 +92,6 @@ class _LogInPageState extends State<LogInPage> {
         ? LoadingSpinner()
         : Scaffold(
             key: _scaffoldKey,
-            
-            floatingActionButton: LoginButton(
-                label: buttonType == ButtonType.LOGIN
-                    ? ContentString.login
-                    : ContentString.register,
-                onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  authBloc.logIn(
-                      _emailController.text, _passwordController.text);
-                }),
-                
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -136,15 +123,48 @@ class _LogInPageState extends State<LogInPage> {
                         labelText: ContentString.password,
                       ),
                     ),
-                    FlatButton(
-                    child: Text(
-                      ContentString.register,
-                      style: TextStyle(fontSize: 20.0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          LoginButton(
+                              heroTag: 'login',
+                              label: buttonType == ButtonType.LOGIN
+                                  ? ContentString.login
+                                  : ContentString.register,
+                              onPressed: () {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                authBloc.logIn(_emailController.text,
+                                    _passwordController.text);
+                              }),
+                          LoginButton(
+                              label: ContentString.register,
+                              backgroundColor: Colors.white,
+                              color: Colors.black87,
+                              heroTag: 'signup',
+                              onPressed: () {
+//                              setState(() {
+//                                _isLoading = true;
+//                              });
+                                Navigator.of(context)
+                                    .pushNamed(SignUpPage.pageName);
+                              }),
+//                        FlatButton(
+//                          child: Text(
+//                            ContentString.register,
+//                            style: TextStyle(fontSize: 20.0),
+//                          ),
+//                          onPressed: () {
+//                            Navigator.of(context)
+//                                .pushNamed(SignUpPage.pageName);
+//                          },
+//                        ),
+                        ],
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(SignUpPage.pageName);
-                    },
-                  ),
                   ],
                 ),
               ),

@@ -42,6 +42,9 @@ parseDateString(String dateString) {
     dateString = dateString.replaceFirst(RegExp('T'), " ");
   }
 
+  print('printing date');
+  print(dateString);
+
   var timezoneOffset = DateTime.now().timeZoneOffset;
   var time_diff = new Duration(
       hours: timezoneOffset.inHours, minutes: timezoneOffset.inMinutes % 60);
@@ -80,4 +83,14 @@ parseUIDate(DateTime date, TimeOfDay time) {
       .replaceFirst(RegExp(' '), "T");
 
   return '$d.000';
+}
+
+int calculateDateDifference(DateTime date) {
+  //Yesterday : calculateDifference(date) == -1.
+//Today : calculateDifference(date) == 0.
+//Tomorrow : calculateDifference(date) == 1
+  DateTime now = DateTime.now();
+  return DateTime(date.year, date.month, date.day)
+      .difference(DateTime(now.year, now.month, now.day))
+      .inDays;
 }

@@ -2,7 +2,7 @@ class ContentString {
   //login page
   static const not_registered = 'Not Registered?';
   static const login = 'Login';
-  static const register = 'Register';
+  static const register = 'Sign Up';
   static const email_hint = 'Enter Your Email Address';
   static const password_hint = 'Enter Your EPassword';
   static const email = 'Email';

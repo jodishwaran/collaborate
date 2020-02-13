@@ -1,11 +1,12 @@
 import 'package:collaborate/bloc/auth_bloc.dart';
-import 'package:collaborate/bloc/event_message_bloc.dart';
 import 'package:collaborate/bloc/category_bloc.dart';
 import 'package:collaborate/bloc/event_bloc.dart';
+import 'package:collaborate/bloc/event_message_bloc.dart';
 import 'package:collaborate/page/app_page.dart';
 import 'package:collaborate/page/categories_page.dart';
 import 'package:collaborate/page/create_event_page.dart';
 import 'package:collaborate/page/event_detail_page.dart';
+import 'package:collaborate/page/event_messages_page.dart';
 import 'package:collaborate/page/explore_page.dart';
 import 'package:collaborate/page/loading_spinner.dart';
 import 'package:collaborate/page/profile.dart';
@@ -78,6 +79,7 @@ class MyApp extends StatelessWidget {
                 ),
           routes: {
             Profile.pageName: (ctx) => Profile(),
+            EventMessagesPage.pageName: (ctx) => EventMessagesPage(),
             Explore.pageName: (ctx) => Explore(),
             CategoriesPage.pageName: (ctx) => CategoriesPage(),
             CreateEventPage.pageName: (ctx) => CreateEventPage(),

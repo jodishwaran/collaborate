@@ -18,7 +18,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   var _usernameController = TextEditingController();
   var _passwordController = TextEditingController();
   var _firstnameController = TextEditingController();
@@ -29,23 +28,18 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
 
   StreamSubscription _subscription;
-  StreamSubscription _userCategoriessubscription;
 
   @override
   void initState() {
     // TODO: implement initState
-    setState(() {
-     
-    });
+    setState(() {});
     super.initState();
   }
 
   bool _initDone = false;
   @override
   void didChangeDependencies() {
-    if (!_initDone) {
-      
-    }
+    if (!_initDone) {}
 
     _initDone = true;
     super.didChangeDependencies();
@@ -59,28 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ? LoadingSpinner()
         : Scaffold(
             key: _scaffoldKey,
-            floatingActionButton: SignupButton(
-                label: buttonType == ButtonType.REGISTER
-                    ? ContentString.register
-                    : ContentString.login,
-                onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  var data={'username': _usernameController.text,
-                            'password': _passwordController.text,
-                            'firstName': _firstnameController.text,
-                            'lastName': _lastnameController.text,
-                            'emailId': _emailController.text,
-                            'locationId': '1'};
-                  var res = authBloc.signUp(data);
-                  if(res=="Success"){
-                    print("User signed up succesfully");
-                  }else{
-                    print("sign up failed");
-                  }
-                  Navigator.of(context).pushReplacementNamed(LogInPage.pageName);
-                }),
+//            floatingActionButton: ,
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -97,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: ContentString.firstname,
                       ),
                     ),
-                     SizedBox(
+                    SizedBox(
                       height: 15,
                     ),
                     TextField(
@@ -110,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: ContentString.lastname,
                       ),
                     ),
-                     SizedBox(
+                    SizedBox(
                       height: 15,
                     ),
                     TextField(
@@ -119,7 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       decoration: kTextFieldDecoration.copyWith(
-                        hintText: ContentString.username_hint,
+//                        hintText: ContentString.username_hint,
                         labelText: ContentString.username,
                       ),
                     ),
@@ -132,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       decoration: kTextFieldDecoration.copyWith(
-                        hintText: ContentString.email_hint,
+//                        hintText: ContentString.email_hint,
                         labelText: ContentString.email,
                       ),
                     ),
@@ -147,10 +120,50 @@ class _SignUpPageState extends State<SignUpPage> {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       decoration: kTextFieldDecoration.copyWith(
-                        hintText: ContentString.password_hint,
+//                        hintText: ContentString.password_hint,
                         labelText: ContentString.password,
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SignupButton(
+                              label: ContentString.register,
+                              onPressed: () {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                var data = {
+                                  'username': _usernameController.text,
+                                  'password': _passwordController.text,
+                                  'firstName': _firstnameController.text,
+                                  'lastName': _lastnameController.text,
+                                  'emailId': _emailController.text,
+                                  'locationId': '1'
+                                };
+                                var res = authBloc.signUp(data);
+                                if (res == "Success") {
+                                  print("User signed up succesfully");
+                                } else {
+                                  print("sign up failed");
+                                }
+                                Navigator.of(context)
+                                    .pushReplacementNamed(LogInPage.pageName);
+                              }),
+                          FlatButton(
+                            child: Text(
+                              'Back to login',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -161,8 +174,21 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _subscription.cancel();
-    _userCategoriessubscription.cancel();
+    if (_subscription != null) {
+      _subscription.cancel();
+    }
+
     super.dispose();
   }
 }
+//
+//Row(
+//children: <Widget>[
+//FlatButton(
+//child: Text('login'),
+//onPressed: () {
+//Navigator.of(context).pop();
+//},
+//)
+//],
+//)

@@ -93,24 +93,34 @@ class CategoriesBloc extends BlocBase {
     ]);
   }
 
-  updateCategorySelection(List<Category> categoriesWithSelection) {
-//    List<Category> categories = _subject.value;
-//    final int categoryIndex = categories.indexWhere((c) {
-//      return c.id == categoryId;
-//    });
-//
-//    Category category = categories[categoryIndex];
-//
-//    category.isSelected = !category.isSelected;
-//
-//    categories[categoryIndex] = category;
-//
-//    _inCategories.add(categories);
-
+  updateCategorySelection(
+      List<Category> categoriesWithSelection, userId, token) async {
     final userSelectedCategories = categoriesWithSelection.where((category) {
       return category.isSelected;
     }).toList();
-    _inUserCategories.add(userSelectedCategories);
+
+    final userSelectedCategoriesData = userSelectedCategories.map((category) {
+      return {
+        "categoryId": category.id,
+        "userId": userId,
+      };
+    }).toList();
+
+    print(userSelectedCategoriesData);
+
+    try {
+      await postUserCategories(userId, token, userSelectedCategoriesData);
+      _inUserCategories.add(userSelectedCategories);
+    } catch (err) {
+      print('Error while saving categories for user $userId');
+    }
+  }
+
+  postUserCategories(
+      int userId, String token, userSelectedCategoriesData) async {
+    final url = Endpoints.kgetUserCategories(userId);
+    await HTTPHelper()
+        .post(data: userSelectedCategoriesData, token: token, url: url);
   }
 
   @override
